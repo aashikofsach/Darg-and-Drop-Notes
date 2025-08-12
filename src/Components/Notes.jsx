@@ -1,49 +1,41 @@
-import React, { useEffect } from 'react'
-import Note from './Note'
+import React, { useEffect } from "react";
+import Note from "./Note";
 
 function Notes({ notes, setnotes }) {
+  useEffect(() => {
+    let savedNotes = [];
 
-    useEffect(() => {
+    let updatedNotes = notes.map((note) => {
+      let savedNote = null;
+      if (savedNote) {
+        return {};
+      } else {
+        const position = determinePosition();
+        return { ...note, position };
+      }
+    });
 
-        let savedNotes = [] ;
+    setnotes(updatedNotes);
+  }, [notes.length]);
 
-        let updatedNotes = notes.map((note)=> {
-            let savedNote = null ;
-            if(savedNote)
-            {
-                return{}
-            }
-            else
-            {
-                const position = determinePosition();
-                return {...note, position}
-            }
+  function determinePosition() {
+    console.log("jai mahakal")
+    let maxX = window.innerWidth - 250;
+    let maxY = window.innerHeight - 250;
 
-        })
+    return {
+      x: Math.floor(Math.random() * maxX),
+      y: Math.floor(Math.random() * maxY),
+    };
+  }
 
-        setnotes(updatedNotes)
-     
-    }, [notes.length])
-
-    function determinePosition()
-    {
-        let maxX = window.innerWidth - 250 ;
-        let maxY = window.innerHeight - 250 ;
-
-        return {
-            x: Math.floor(Math.random() * maxX),
-            y: Math.floor(Math.random() * maxY)
-        }
-    }
-    
-    return (
-        <div >
-            {
-                notes.map((note) => <Note key={note.id} initialPos={note.position} text={note.data}/>)
-            }
-
-        </div>
-    )
+  return (
+    <div>
+      {notes.map((note) => (
+        <Note key={note.id} initialPos={note.position} text={note.data} />
+      ))}
+    </div>
+  );
 }
 
-export default Notes
+export default Notes;
