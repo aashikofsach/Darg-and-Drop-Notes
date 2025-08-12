@@ -15,7 +15,7 @@ function App() {
   ]);
 
   return (
-    <div>
+    <div >
       <Notes notes={notes} setnotes={setNotes}/>
 
     </div>
