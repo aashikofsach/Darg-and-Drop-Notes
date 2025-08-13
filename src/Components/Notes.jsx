@@ -3,19 +3,25 @@ import Note from "./Note";
 
 function Notes({ notes, setnotes }) {
   useEffect(() => {
-    let savedNotes = [];
+    let savedNotes = JSON.parse(localStorage.getItem("data"))||[];
 
     let updatedNotes = notes.map((note) => {
-      let savedNote = null;
-      if (savedNote) {
-        return {};
-      } else {
+      let savedNote = savedNotes.find((n)=>n.id === note.id )
+      console.log(savedNote)
+      // let savedNote = null
+      if (savedNote) {  
+        return {
+          ...note , position : savedNote.position
+        };
+      } 
+      else {
         const position = determinePosition();
         return { ...note, position };
       }
-    });
+    }); 
 
     setnotes(updatedNotes);
+    localStorage.setItem("data",JSON.stringify(updatedNotes))
   }, [notes.length]);
 
   function determinePosition() {
