@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { createRef, useEffect, useRef } from "react";
 import Note from "./Note";
 
 function Notes({ notes, setnotes }) {
@@ -24,6 +24,9 @@ function Notes({ notes, setnotes }) {
     localStorage.setItem("data",JSON.stringify(updatedNotes))
   }, [notes.length]);
 
+  const noteRefs = useRef([]);
+  console.log(noteRefs)
+
   function determinePosition() {
     console.log("jai mahakal")
     let maxX = window.innerWidth - 250;
@@ -35,10 +38,23 @@ function Notes({ notes, setnotes }) {
     };
   }
 
+  function handleDragStart(id , e)
+  {
+    console.log('jai mahakal doobara ')
+    const useRef = noteRefs.current[id].current;
+    const rect = useRef.getBoundingClientRect();
+    console.log(rect)
+  }
+
   return (
     <div>
       {notes.map((note) => (
-        <Note key={note.id} initialPos={note.position} text={note.data} />
+        <Note 
+        ref={noteRefs.current[note.id]?noteRefs.current[note.id] : noteRefs.current[note.id] = createRef() } 
+        onMouseDown={(e) => handleDragStart(note.id , e)} 
+        key={note.id} 
+        initialPos={note.position} 
+        text={note.data}  />
       ))}
     </div>
   );
