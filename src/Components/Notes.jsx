@@ -8,7 +8,7 @@ function Notes({ notes, setnotes }) {
     let updatedNotes = notes.map((note) => {
       let savedNote = savedNotes.find((n)=>n.id === note.id )
       console.log(savedNote)
-      // let savedNote = null
+      //  savedNote = null
       if (savedNote) {  
         return {
           ...note , position : savedNote.position
