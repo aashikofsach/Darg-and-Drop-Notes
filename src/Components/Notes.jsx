@@ -68,11 +68,35 @@ function Notes({ notes, setnotes }) {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup',handleMouseUp)
 
+      const finalRect = noteRef.getBoundingClientRect();
+      console.log(finalRect)
+      const finalPosition = {x:finalRect.left , y:finalRect.top}
+
+      if(false)
+      {
+
+      }
+      else{
+        updateNotePosition(id, finalPosition)
+
+      }
+
     }
 
     document.addEventListener("mousemove", handleMouseMove)
     document.addEventListener("mouseup", handleMouseUp)
   }
+
+  function updateNotePosition(id, finalPosition)
+  {
+    const updateNotes = notes.map((note)=> note.id===id ? {...note , position : finalPosition}: note);
+    
+    setnotes(updateNotes);
+    localStorage.setItem("data", JSON.stringify(updateNotes))
+
+
+  }
+
 
   return (
     <div>
