@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 
-const Note = forwardRef(({ text, initialPos = { x: 0, y: 0 }, ...props }, ref) =>{
+const  Note = forwardRef(({ text, initialPos = { x: 0, y: 0 }, ...props }, ref) =>{
   console.log(initialPos)
   // console.log(note)
 
