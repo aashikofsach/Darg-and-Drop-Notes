@@ -50,6 +50,7 @@ function Notes({ notes, setnotes }) {
     let offsetX = e.clientX - rect.left;
     let offsetY = e.clientY - rect.top;
     // console.log(offsetX, offsetY)
+    const startPos = note.position;
     console.log(note)
     console.log(e.clientX)
 
@@ -61,22 +62,25 @@ function Notes({ notes, setnotes }) {
 
       noteRef.style.left = `${newX}px`
       noteRef.style.top = `${newY}px`
-    } ;
+    };
 
-    const handleMouseUp = () =>{
+    const handleMouseUp = () => {
       console.log("mouse up ")
       document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup',handleMouseUp)
+      document.removeEventListener('mouseup', handleMouseUp)
 
       const finalRect = noteRef.getBoundingClientRect();
       console.log(finalRect)
-      const finalPosition = {x:finalRect.left , y:finalRect.top}
+      const finalPosition = { x: finalRect.left, y: finalRect.top }
 
-      if(false)
-      {
+      if (checkForOverlap(id)) {
+        
+      noteRef.style.left = `${startPos.x}px`
+      noteRef.style.top = `${startPos.y}px`
+
 
       }
-      else{
+      else {
         updateNotePosition(id, finalPosition)
 
       }
@@ -87,13 +91,35 @@ function Notes({ notes, setnotes }) {
     document.addEventListener("mouseup", handleMouseUp)
   }
 
-  function updateNotePosition(id, finalPosition)
-  {
-    const updateNotes = notes.map((note)=> note.id===id ? {...note , position : finalPosition}: note);
-    
+  function updateNotePosition(id, finalPosition) {
+    const updateNotes = notes.map((note) => note.id === id ? { ...note, position: finalPosition } : note);
+
     setnotes(updateNotes);
     localStorage.setItem("data", JSON.stringify(updateNotes))
 
+
+  }
+
+  function checkForOverlap(id) {
+    const currentNoteRef = noteRefs.current[id].current;
+    const currentRect = currentNoteRef.getBoundingClientRect();
+    // console.log("Radhe radhe",rect)
+
+    return notes.some((note) => {
+      if (note.id === id) return false;
+
+      const otherNoteRef = noteRefs.current[note.id].current;
+      const otherRect = otherNoteRef.getBoundingClientRect();
+
+      const overlap = !(currentRect.right < otherRect.left ||
+        currentRect.left > otherRect.right ||
+        currentRect.bottom < otherRect.top ||
+        currentRect.top > otherRect.bottom
+      )
+
+      return overlap;
+
+    })
 
   }
 
@@ -103,7 +129,10 @@ function Notes({ notes, setnotes }) {
       {notes.map((note) => (
         <Note
           ref={noteRefs.current[note.id] ? noteRefs.current[note.id] : noteRefs.current[note.id] = createRef()}
-          onMouseDown={(e) => handleDragStart(note, e)}
+          onMouseDown={(e) => {
+            handleDragStart(note, e)
+            checkForOverlap(note.id)
+          }}
           key={note.id}
           initialPos={note.position}
           text={note.data} />
